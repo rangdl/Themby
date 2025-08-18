@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,8 +18,7 @@ import 'package:themby/src/features/player/widgets/progress/media_progress_bar.d
 import 'package:themby/src/features/player/widgets/selections/selection_button.dart';
 import 'package:themby/src/features/player/widgets/title_logo.dart';
 
-class PlayControl extends ConsumerStatefulWidget{
-
+class PlayControl extends ConsumerStatefulWidget {
   const PlayControl({super.key, required this.media});
 
   final SelectedMedia media;
@@ -30,16 +27,14 @@ class PlayControl extends ConsumerStatefulWidget{
   ConsumerState<ConsumerStatefulWidget> createState() => _PlayControl();
 }
 
-
-class _PlayControl extends ConsumerState<PlayControl>{
-
+class _PlayControl extends ConsumerState<PlayControl> {
   @override
   void initState() {
     super.initState();
   }
 
   @override
-  void deactivate(){
+  void deactivate() {
     super.deactivate();
   }
 
@@ -50,8 +45,7 @@ class _PlayControl extends ConsumerState<PlayControl>{
 
   @override
   Widget build(BuildContext context) {
-
-    double height = MediaQuery.sizeOf(context).height;
+    // double height = MediaQuery.sizeOf(context).height;
 
     return SafeArea(
       minimum: const EdgeInsets.all(StyleString.safeSpace),
@@ -59,14 +53,13 @@ class _PlayControl extends ConsumerState<PlayControl>{
         fit: StackFit.passthrough,
         alignment: Alignment.center,
         clipBehavior: Clip.none,
-
         children: [
           const Positioned.fill(
-             left: 12,
-             right: 12,
-             bottom: 100,
-             top: 12,
-             child: HorizontalScreenGestures(),
+            left: 12,
+            right: 12,
+            bottom: 100,
+            top: 12,
+            child: HorizontalScreenGestures(),
           ),
           Positioned(
             top: 6,
@@ -76,17 +69,17 @@ class _PlayControl extends ConsumerState<PlayControl>{
           Positioned(
             top: 6,
             right: 6,
-            child:_showOrHide(_buildTapSheet()),
+            child: _showOrHide(_buildTapSheet()),
           ),
           const Positioned(
             right: 6,
             child: LockButton(),
           ),
           Positioned(
-            bottom: 0,
-            left: 6,
-            right: 6,
-            child: _showOrHide(const Column(
+              bottom: 0,
+              left: 6,
+              right: 6,
+              child: _showOrHide(const Column(
                 children: [
                   MediaProgressBar(),
                   Row(
@@ -112,14 +105,13 @@ class _PlayControl extends ConsumerState<PlayControl>{
                     ],
                   )
                 ],
-              ))
-          ),
+              ))),
         ],
       ),
     );
   }
 
-  Widget _buildTapSheet(){
+  Widget _buildTapSheet() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -135,12 +127,9 @@ class _PlayControl extends ConsumerState<PlayControl>{
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-
               ToggleFitButton(),
-
               SizedBox(width: 5),
               ToggleAudioButtoon(),
-
               SizedBox(width: 5),
               ToggleSubtitleButton()
             ],
@@ -150,9 +139,9 @@ class _PlayControl extends ConsumerState<PlayControl>{
     );
   }
 
-  Widget _showOrHide(Widget child){
+  Widget _showOrHide(Widget child) {
     return Consumer(
-      builder: (context, ref, _){
+      builder: (context, ref, _) {
         return IgnorePointer(
           ignoring: ref.watch(lockServiceProvider).controlsLock,
           child: AnimatedOpacity(
@@ -164,5 +153,4 @@ class _PlayControl extends ConsumerState<PlayControl>{
       },
     );
   }
-
 }
