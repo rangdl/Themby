@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -17,41 +15,37 @@ import 'package:themby/src/features/player/service/themby_controller.dart';
 
 part 'controls_service.g.dart';
 
-
 @riverpod
-class ControlsService extends _$ControlsService{
-
+class ControlsService extends _$ControlsService {
   @override
   ControlsState build() => ControlsState(position: Duration.zero);
 
   ///首次开始播放
-  Future<void> startPlay(SelectedMedia media) async{
-
+  Future<void> startPlay(SelectedMedia media) async {
     late String currentId;
     late String url;
     late String mediaSourceId;
     late String playSessionId;
 
-    if(media.type == 'Movie'){
+    if (media.type == 'Movie') {
       PlaybackInfo playInfo = await ref.read(getPlaybackInfoProvider(media.id!).future);
       mediaSourceId = playInfo.mediaSources[media.mediaSourcesIndex ?? 0].id;
       playSessionId = playInfo.playSessionId;
-      url = await ref.read(getPlayerUrlProvider(media.id!,index: media.mediaSourcesIndex).future);
+      url = await ref.read(getPlayerUrlProvider(media.id!, index: media.mediaSourcesIndex).future);
       currentId = media.id!;
-    }else if(media.type == "Series"){
-      await ref.read(getNextUpProvider(media.id!).future)
-          .then((value) {
+    } else if (media.type == "Series") {
+      await ref.read(getNextUpProvider(media.id!).future).then((value) {
         currentId = value[0].id!;
       });
       PlaybackInfo playInfo = await ref.read(getPlaybackInfoProvider(currentId).future);
       mediaSourceId = playInfo.mediaSources[media.mediaSourcesIndex ?? 0].id;
       playSessionId = playInfo.playSessionId;
-      url = await ref.read(getPlayerUrlProvider(currentId,index: media.mediaSourcesIndex).future);
-    }else if(media.type == "Episode"){
+      url = await ref.read(getPlayerUrlProvider(currentId, index: media.mediaSourcesIndex).future);
+    } else if (media.type == "Episode") {
       PlaybackInfo playInfo = await ref.read(getPlaybackInfoProvider(media.id!).future);
       mediaSourceId = playInfo.mediaSources[media.mediaSourcesIndex ?? 0].id;
       playSessionId = playInfo.playSessionId;
-      url = await ref.read(getPlayerUrlProvider(media.id!,index: media.mediaSourcesIndex).future);
+      url = await ref.read(getPlayerUrlProvider(media.id!, index: media.mediaSourcesIndex).future);
       currentId = media.id!;
     }
     state = state.copyWith(
@@ -62,29 +56,30 @@ class ControlsService extends _$ControlsService{
         playSessionId: playSessionId,
         playType: media.type,
         mediaIndex: media.playIndex,
-        position: media.position
-    );
+        position: media.position);
 
-    await ref.read(videoControllerProvider)
-        .player
-        .open(Media(url,httpHeaders: {'user-agent': "Themby/1.0.4",},start: media.position));
+    await ref.read(videoControllerProvider).player.open(Media(url,
+        httpHeaders: {
+          'user-agent': "Themby/1.0.4",
+        },
+        start: media.position));
 
-    await ref.read(videoControllerProvider).player.play().then((v)async{
-      if(media.audioIndex != null){
+    await ref.read(videoControllerProvider).player.play().then((v) async {
+      if (media.audioIndex != null) {
         toggleAudio(media.audioIndex!);
       }
-      if(media.subtitleIndex != null){
+      if (media.subtitleIndex != null) {
         toggleSubtitle(media.subtitleIndex!);
       }
     });
   }
 
   ///跳转到指定位置
-  Future<void> seekTo(Duration position,{String type = "slide"}) async{
+  Future<void> seekTo(Duration position, {String type = "slide"}) async {
     if (position < Duration.zero) {
       position = Duration.zero;
     }
-    if(type != "slide"){
+    if (type != "slide") {
       await ref.read(videoControllerProvider).player.stream.buffer.first;
     }
 
@@ -96,7 +91,7 @@ class ControlsService extends _$ControlsService{
   }
 
   ///设置播放速度
-  Future<void> setRate(double rate) async{
+  Future<void> setRate(double rate) async {
     ref.read(videoControllerProvider).player.setRate(rate);
     state = state.copyWith(rate: rate);
   }
@@ -110,11 +105,17 @@ class ControlsService extends _$ControlsService{
     String playSessionId = playInfo.playSessionId;
     String url = await ref.read(getPlayerUrlProvider(id).future);
 
-    ref.read(videoControllerProvider).player.open(Media(url,httpHeaders: {'user-agent': "Themby/1.0.3",}));
+    ref.read(videoControllerProvider).player.open(Media(url, httpHeaders: {
+          'user-agent': "Themby/1.0.3",
+        }));
     ref.read(videoControllerProvider).player.play().then((v) {
       startRecordPosition();
     });
-    state = state.copyWith(currentMediaId: id, mediaSourceId: mediaSourceId, playSessionId: playSessionId, mediaIndex: index);
+    state = state.copyWith(
+        currentMediaId: id,
+        mediaSourceId: mediaSourceId,
+        playSessionId: playSessionId,
+        mediaIndex: index);
   }
 
   /// 切换音轨
@@ -139,7 +140,7 @@ class ControlsService extends _$ControlsService{
   /// 播放下一集
   Future<void> playNext() async {
     ref.read(controlsServiceProvider.notifier).clearPosition();
-    if(state.playType == "Movie"){
+    if (state.playType == "Movie") {
       SmartDialog.showToast('没有下一集了');
       return;
     }
@@ -147,26 +148,24 @@ class ControlsService extends _$ControlsService{
         tag: TagsString.nextLoading,
         clickMaskDismiss: false,
         builder: (_) {
-          return Image.asset("assets/loading/loading-2.gif",height: 50);
-        }
-    );
-    if(state.playType == "Episode"){
-
-      await ref.watch(getEpisodesProvider(state.parentId!,state.parentId!).future)
-          .then((items) async{
-        final String nextId = _findNextOrPreviousMediaId(items,state.currentMediaId!, "next");
-        if(nextId.isEmpty){
+          return Image.asset("assets/loading/loading-2.gif", height: 50);
+        });
+    if (state.playType == "Episode") {
+      await ref
+          .watch(getEpisodesProvider(state.parentId!, state.parentId!).future)
+          .then((items) async {
+        final String nextId = _findNextOrPreviousMediaId(items, state.currentMediaId!, "next");
+        if (nextId.isEmpty) {
           SmartDialog.showToast('没有下一集了');
           SmartDialog.dismiss(tag: TagsString.nextLoading);
           return;
         }
         await togglePlayMedia(nextId, state.mediaIndex! + 1);
       });
-    }else if(state.playType == 'Series'){
-      await ref.watch(getNextUpProvider(state.mediaId!).future)
-          .then((items) async{
-        final String nextId = _findNextOrPreviousMediaId(items,state.currentMediaId!, "next");
-        if(nextId.isEmpty){
+    } else if (state.playType == 'Series') {
+      await ref.watch(getNextUpProvider(state.mediaId!).future).then((items) async {
+        final String nextId = _findNextOrPreviousMediaId(items, state.currentMediaId!, "next");
+        if (nextId.isEmpty) {
           SmartDialog.showToast('没有下一集了');
           SmartDialog.dismiss(tag: TagsString.nextLoading);
           return;
@@ -179,7 +178,7 @@ class ControlsService extends _$ControlsService{
 
   Future<void> playPrevious() async {
     ref.read(controlsServiceProvider.notifier).clearPosition();
-    if(state.playType == "Movie"){
+    if (state.playType == "Movie") {
       SmartDialog.showToast('没有上一集了');
       return;
     }
@@ -187,26 +186,24 @@ class ControlsService extends _$ControlsService{
         tag: TagsString.nextLoading,
         clickMaskDismiss: false,
         builder: (_) {
-          return Image.asset("assets/loading/loading-2.gif",height: 50);
-        }
-    );
-    if(state.playType == "Episode"){
-
-      await ref.watch(getEpisodesProvider(state.parentId!,state.parentId!).future)
-          .then((items) async{
-        final String previousId = _findNextOrPreviousMediaId(items,state.currentMediaId!, "");
-        if(previousId.isEmpty){
+          return Image.asset("assets/loading/loading-2.gif", height: 50);
+        });
+    if (state.playType == "Episode") {
+      await ref
+          .watch(getEpisodesProvider(state.parentId!, state.parentId!).future)
+          .then((items) async {
+        final String previousId = _findNextOrPreviousMediaId(items, state.currentMediaId!, "");
+        if (previousId.isEmpty) {
           SmartDialog.showToast('没有上一集了');
           SmartDialog.dismiss(tag: TagsString.nextLoading);
           return;
         }
         await togglePlayMedia(previousId, state.mediaIndex! - 1);
       });
-    }else if(state.playType == 'Series'){
-      await ref.watch(getNextUpProvider(state.mediaId!).future)
-          .then((items) async{
-        final String previousId = _findNextOrPreviousMediaId(items,state.currentMediaId!, "");
-        if(previousId.isEmpty){
+    } else if (state.playType == 'Series') {
+      await ref.watch(getNextUpProvider(state.mediaId!).future).then((items) async {
+        final String previousId = _findNextOrPreviousMediaId(items, state.currentMediaId!, "");
+        if (previousId.isEmpty) {
           SmartDialog.showToast('没有上一集了');
           SmartDialog.dismiss(tag: TagsString.nextLoading);
           return;
@@ -217,22 +214,21 @@ class ControlsService extends _$ControlsService{
     SmartDialog.dismiss(tag: TagsString.nextLoading);
   }
 
-
-  String _findNextOrPreviousMediaId(List<Item> items, String mediaId, String type){
+  String _findNextOrPreviousMediaId(List<Item> items, String mediaId, String type) {
     if (items.isEmpty) {
       return '';
     }
-    for(int i = 0; i < items.length; i++){
-      if(items[i].id == mediaId){
-        if(i == 0 && type == "") {
+    for (int i = 0; i < items.length; i++) {
+      if (items[i].id == mediaId) {
+        if (i == 0 && type == "") {
           return '';
-        }else if(i == items.length -1){
+        } else if (i == items.length - 1) {
           return '';
         }
-        if(type == "next"){
-          return items[i+1].id ?? '';
-        }else{
-          return items[i-1].id ?? '';
+        if (type == "next") {
+          return items[i + 1].id ?? '';
+        } else {
+          return items[i - 1].id ?? '';
         }
       }
     }
@@ -244,7 +240,8 @@ class ControlsService extends _$ControlsService{
     final mediaId = state.mediaId;
     final mediaSourceId = state.mediaSourceId;
     final playSessionId = state.playSessionId;
-    await ref.read(positionStartProvider(mediaId!, position ?? 0, playSessionId!, mediaSourceId!).future);
+    await ref.read(
+        positionStartProvider(mediaId!, position ?? 0, playSessionId!, mediaSourceId!).future);
   }
 
   /// 记录播放位置
@@ -261,9 +258,11 @@ class ControlsService extends _$ControlsService{
     final playSessionId = state.playSessionId;
 
     if (type == "update") {
-      ref.read(positionBackProvider(mediaId!, position.inMicroseconds * 10, playSessionId!, mediaSourceId!));
+      ref.read(positionBackProvider(
+          mediaId!, position.inMicroseconds * 10, playSessionId!, mediaSourceId!));
     } else {
-      ref.read(positionStopProvider(mediaId!, position.inMicroseconds * 10, playSessionId!, mediaSourceId!));
+      ref.read(positionStopProvider(
+          mediaId!, position.inMicroseconds * 10, playSessionId!, mediaSourceId!));
     }
   }
 
@@ -271,5 +270,4 @@ class ControlsService extends _$ControlsService{
   void clearPosition() {
     state = state.copyWith(position: Duration.zero);
   }
-
 }
