@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -15,12 +17,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 part 'app.g.dart';
 
-
 @Riverpod(keepAlive: true)
-Future<void> appStartup(AppStartupRef ref) async {
+Future<void> appStartup(Ref ref) async {
   // WidgetsFlutterBinding.ensureInitialized();
 
-  if (Platform.isAndroid){
+  if (Platform.isAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -32,12 +33,11 @@ Future<void> appStartup(AppStartupRef ref) async {
   MediaKit.ensureInitialized();
 }
 
-class App extends ConsumerWidget{
+class App extends ConsumerWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final startup = ref.watch(appStartupProvider);
 
     return MaterialApp.router(
@@ -45,19 +45,19 @@ class App extends ConsumerWidget{
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: colorType[ref.watch(appSettingRepositoryProvider).customColor],
-            brightness: Brightness.light,
-            inverseSurface: Colors.grey.shade200,
-            onInverseSurface: Colors.grey.shade100,
+          seedColor: colorType[ref.watch(appSettingRepositoryProvider).customColor],
+          brightness: Brightness.light,
+          inverseSurface: Colors.grey.shade200,
+          onInverseSurface: Colors.grey.shade100,
         ),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: colorType[ref.watch(appSettingRepositoryProvider).customColor],
-            brightness: Brightness.dark,
-            inverseSurface: Colors.black87,
-            onInverseSurface: Colors.black26,
+          seedColor: colorType[ref.watch(appSettingRepositoryProvider).customColor],
+          brightness: Brightness.dark,
+          inverseSurface: Colors.black87,
+          onInverseSurface: Colors.black26,
         ),
         useMaterial3: true,
       ),

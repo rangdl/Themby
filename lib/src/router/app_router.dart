@@ -41,8 +41,8 @@ enum AppRoute {
 }
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final _homeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'home');
-final _libraryItemsNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'libraryItems');
+// final _homeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'home');
+// final _libraryItemsNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'libraryItems');
 final _embyNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'emby');
 final _favoriteNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'favorite');
 
@@ -52,21 +52,19 @@ CustomTransitionPage buildPageWithDefaultTransition<T>({
   required Widget child,
 }) {
   return CustomTransitionPage<T>(
-    key: state.pageKey,
-    child: child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        SlideTransition(
-          position: animation.drive(
-            Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).chain(
-              CurveTween(curve: Curves.easeIn),
+      key: state.pageKey,
+      child: child,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) => SlideTransition(
+            position: animation.drive(
+              Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).chain(
+                CurveTween(curve: Curves.easeIn),
+              ),
             ),
-          ),
-          child: child,
-        )
-  );
+            child: child,
+          ));
 }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -160,14 +158,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 path: '/library',
                 name: AppRoute.library.name,
                 pageBuilder: (context, state) {
-
                   final parentId = state.uri.queryParameters['parentId']!;
                   final title = state.uri.queryParameters['title']!;
                   final filter = state.uri.queryParameters['filter']!;
 
                   return NoTransitionPage(
                     key: state.pageKey,
-                    child: EmbyLibraryScreen(parentId: parentId, title: title,filter: filter),
+                    child: EmbyLibraryScreen(parentId: parentId, title: title, filter: filter),
                   );
                 },
               ),
@@ -181,18 +178,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   final filter = state.uri.queryParameters['filter']!;
                   return NoTransitionPage(
                     key: state.pageKey,
-                    child: EmbyLibraryItemsScreen(parentId: parentId, title: title,filter: filter,genreIds: genreIds),
+                    child: EmbyLibraryItemsScreen(
+                        parentId: parentId, title: title, filter: filter, genreIds: genreIds),
                   );
                 },
               ),
               GoRoute(
-                path: '/emby/search',
-                name: AppRoute.search.name,
-                pageBuilder: (context, state) => NoTransitionPage(
-                  key: state.pageKey,
-                  child: const EmbySearchScreen(),
-                )
-              )
+                  path: '/emby/search',
+                  name: AppRoute.search.name,
+                  pageBuilder: (context, state) => NoTransitionPage(
+                        key: state.pageKey,
+                        child: const EmbySearchScreen(),
+                      ))
             ],
           ),
           StatefulShellBranch(
@@ -233,20 +230,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/player',
-        name: AppRoute.player.name,
-        pageBuilder: (context, state) {
-
-          SelectedMedia select = state.extra as SelectedMedia;
-          return NoTransitionPage(
-            key: state.pageKey,
-            child: PlayerScreen(
-              media: select,
-            ),
-          );
-        }
-      )
-
+          path: '/player',
+          name: AppRoute.player.name,
+          pageBuilder: (context, state) {
+            SelectedMedia select = state.extra as SelectedMedia;
+            return NoTransitionPage(
+              key: state.pageKey,
+              child: PlayerScreen(
+                media: select,
+              ),
+            );
+          })
     ],
   );
 });

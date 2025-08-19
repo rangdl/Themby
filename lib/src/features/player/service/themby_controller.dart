@@ -1,7 +1,7 @@
-
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,8 +10,7 @@ import 'package:themby/src/common/data/player_setting.dart';
 
 part 'themby_controller.g.dart';
 
-class ThembyController{
-
+class ThembyController {
   ThembyController({required this.mpvBufferSize, required this.mpvHardDecoding});
 
   int mpvBufferSize;
@@ -22,15 +21,10 @@ class ThembyController{
 
   VideoController get controller => videoController;
 
-
   Future init() async {
-    Player player =  Player(
+    Player player = Player(
         configuration: PlayerConfiguration(
-            bufferSize: 1024 * 1024 * mpvBufferSize,
-            libass: true,
-            logLevel: MPVLogLevel.debug
-        )
-    );
+            bufferSize: 1024 * 1024 * mpvBufferSize, libass: true, logLevel: MPVLogLevel.debug));
     if (Platform.isAndroid) {
       NativePlayer nativePlayer = player.platform as NativePlayer;
       final ByteData data = await rootBundle.load("assets/fonts/subfont.ttf");
@@ -55,15 +49,13 @@ class ThembyController{
 }
 
 @riverpod
-ThembyController thembyController(ThembyControllerRef ref){
+ThembyController thembyController(Ref ref) {
   return ThembyController(
-    mpvBufferSize: ref.watch(playerSettingProvider).mpvBufferSize,
-    mpvHardDecoding: ref.watch(playerSettingProvider).mpvHardDecoding
-  );
+      mpvBufferSize: ref.watch(playerSettingProvider).mpvBufferSize,
+      mpvHardDecoding: ref.watch(playerSettingProvider).mpvHardDecoding);
 }
 
 @riverpod
-VideoController videoController(VideoControllerRef ref){
+VideoController videoController(Ref ref) {
   return ref.watch(thembyControllerProvider).controller;
 }
-

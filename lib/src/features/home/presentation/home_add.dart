@@ -1,4 +1,4 @@
-
+// ignore_for_file: provider_parameters
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,22 +9,18 @@ import 'package:themby/src/common/domiani/site.dart';
 import 'package:themby/src/features/home/data/site_repository.dart';
 import 'package:themby/src/features/home/presentation/home_server_notifier.dart';
 
-class HomeAddSite extends ConsumerStatefulWidget{
+class HomeAddSite extends ConsumerStatefulWidget {
   const HomeAddSite({super.key});
 
   @override
   ConsumerState<HomeAddSite> createState() => _HomeAddState();
 }
 
-
 class _HomeAddState extends ConsumerState<HomeAddSite> {
-
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
 
   @override
   Widget build(BuildContext context) {
-
     final state = ref.watch(homeServerNotifierProvider);
 
     return Scaffold(
@@ -35,7 +31,7 @@ class _HomeAddState extends ConsumerState<HomeAddSite> {
             SmartDialog.dismiss();
           },
         ),
-        title: const Text('添加连接',style: StyleString.headerStyle),
+        title: const Text('添加连接', style: StyleString.headerStyle),
       ),
       body: Container(
         alignment: Alignment.center,
@@ -50,10 +46,9 @@ class _HomeAddState extends ConsumerState<HomeAddSite> {
             children: [
               SizedBox(
                   child: SvgPicture.asset(
-                    'assets/emby.svg',
-                    width: 60,
-                  )
-              ),
+                'assets/emby.svg',
+                width: 60,
+              )),
               const SizedBox(height: 30),
               Form(
                 key: formKey,
@@ -133,13 +128,14 @@ class _HomeAddState extends ConsumerState<HomeAddSite> {
                     borderRadius: StyleString.lgRadius,
                   ),
                   child: const Text('连接'),
-                  onPressed: () async{
+                  onPressed: () async {
                     if (formKey.currentState!.validate()) {
                       SmartDialog.showLoading();
 
                       Uri uri = Uri.parse(state.hostController.text);
 
-                      await ref.read(addEmbySiteProvider(site: Site(
+                      await ref.read(addEmbySiteProvider(
+                          site: Site(
                         scheme: uri.scheme,
                         host: uri.host,
                         port: uri.port,
@@ -153,7 +149,6 @@ class _HomeAddState extends ConsumerState<HomeAddSite> {
                         ref.refresh(finaAllByTextProvider(text: ''));
                         SmartDialog.dismiss();
                       });
-
                     }
                   },
                 ),

@@ -1,4 +1,6 @@
 analyzer:
+  errors:
+    unused_result: ignore
   plugins:
     - custom_lint
 # This file configures the analyzer, which statically analyzes Dart code to

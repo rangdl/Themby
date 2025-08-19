@@ -22,40 +22,38 @@ class EmbyHomeScreen extends ConsumerWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: _buildAppBar(site!,context),
+      appBar: _buildAppBar(site!, context),
       body: RefreshIndicator(
-        onRefresh: () async {
-          await ref.refresh(getResumeMediaProvider().future);
-          await ref.refresh(getViewsProvider.future).then((data){
-            data.items.map((item) async{
-              ref.refresh(getLastMediaProvider(item.id!));
+          onRefresh: () async {
+            await ref.refresh(getResumeMediaProvider().future);
+            await ref.refresh(getViewsProvider.future).then((data) {
+              data.items.map((item) async {
+                ref.refresh(getLastMediaProvider(item.id!));
+              });
             });
-          });
-        },
-        child: const CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: EmbyRecommendationsMedia(),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(height: 18),
-            ),
-            SliverToBoxAdapter(
-              child: EmbyResumeMedia(),
-            ),
-            SliverToBoxAdapter(
-              child: EmbyView(),
-            ),
-            SliverToBoxAdapter(
-              child: EmbyMediaLibrary(),
-            ),
-          ],
-        )
-      ),
+          },
+          child: const CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: EmbyRecommendationsMedia(),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(height: 18),
+              ),
+              SliverToBoxAdapter(
+                child: EmbyResumeMedia(),
+              ),
+              SliverToBoxAdapter(
+                child: EmbyView(),
+              ),
+              SliverToBoxAdapter(
+                child: EmbyMediaLibrary(),
+              ),
+            ],
+          )),
     );
   }
 }
-
 
 AppBar _buildAppBar(Site site, BuildContext context) {
   return AppBar(
@@ -67,37 +65,41 @@ AppBar _buildAppBar(Site site, BuildContext context) {
         GoRouter.of(context).go('/home');
       },
     ),
-
     actions: [
-        IconButton(
-          icon: const Icon(Icons.search_rounded, size: 30,),
-          color: Colors.white,
-          onPressed: () {
-            GoRouter.of(context).push('/emby/search');
-          },
+      IconButton(
+        icon: const Icon(
+          Icons.search_rounded,
+          size: 30,
         ),
-        IconButton(
-          icon: site.imageTag != null  ? CachedNetworkImage(
-            imageUrl: getAvatarUrl(site),
-            placeholder: (context,url) => const CircularProgressIndicator(),
-            imageBuilder: (context, imageProvider) => CircleAvatar(
-              backgroundImage: imageProvider,
-            ),
-            errorWidget: (context, url, error) => CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.onPrimary,
-              child: Text(
-                (site.username ?? 'T')[0].toUpperCase(),
+        color: Colors.white,
+        onPressed: () {
+          GoRouter.of(context).push('/emby/search');
+        },
+      ),
+      IconButton(
+        icon: site.imageTag != null
+            ? CachedNetworkImage(
+                imageUrl: getAvatarUrl(site),
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                imageBuilder: (context, imageProvider) => CircleAvatar(
+                  backgroundImage: imageProvider,
+                ),
+                errorWidget: (context, url, error) => CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                  child: Text(
+                    (site.username ?? 'T')[0].toUpperCase(),
+                  ),
+                ),
+              )
+            : CircleAvatar(
+                child: Text(
+                  (site.username ?? 'A')[0].toUpperCase(),
+                ),
               ),
-            ),
-          ) : CircleAvatar(
-            child: Text(
-              (site.username ?? 'A')[0].toUpperCase(),
-            ),
-          ),
-          onPressed: () {
-            SmartDialog.showToast('别点我，我是头像');
-          },
-        ),
-      ],
+        onPressed: () {
+          SmartDialog.showToast('别点我，我是头像');
+        },
+      ),
+    ],
   );
 }
