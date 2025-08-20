@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:themby/src/common/constants.dart';
 import 'package:themby/src/common/widget/network_img_layer.dart';
 import 'package:themby/src/features/emby/application/emby_state_service.dart';
 import 'package:themby/src/features/emby/data/image_repository.dart';
 import 'package:themby/src/features/emby/domain/emby/person.dart';
 import 'package:themby/src/features/emby/domain/image_props.dart';
 
-class PeopleCard extends ConsumerWidget{
-
-  const PeopleCard({
-    super.key,
-    required this.person,
-    required this.width,
-    required this.height,
-    this.press,
-    this.longPress,
-    this.longPressEnd
-  });
+class PeopleCard extends ConsumerWidget {
+  const PeopleCard(
+      {super.key,
+      required this.person,
+      required this.width,
+      required this.height,
+      this.press,
+      this.longPress,
+      this.longPressEnd});
 
   final Person person;
 
@@ -32,8 +29,7 @@ class PeopleCard extends ConsumerWidget{
   final Function()? longPressEnd;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-
+  Widget build(BuildContext context, WidgetRef ref) {
     final site = ref.watch(embyStateServiceProvider.select((value) => value.site));
 
     return Card(
@@ -42,12 +38,8 @@ class PeopleCard extends ConsumerWidget{
       margin: EdgeInsets.zero,
       color: Colors.transparent,
       child: InkWell(
-        onTap: () async {
-
-        },
-        onLongPress: () async {
-
-        },
+        onTap: () async {},
+        onLongPress: () async {},
         child: Column(
           children: [
             NetworkImgLayer(
@@ -58,8 +50,7 @@ class PeopleCard extends ConsumerWidget{
                     tag: person.primaryImageTag ?? '',
                     type: ImageType.primary,
                     maxWidth: 400,
-                  )
-              ),
+                  )),
               type: "people",
               width: width,
               height: height,
@@ -75,7 +66,7 @@ class PeopleCard extends ConsumerWidget{
   }
 }
 
-class Content extends StatelessWidget{
+class Content extends StatelessWidget {
   const Content({super.key, required this.person});
 
   final Person person;

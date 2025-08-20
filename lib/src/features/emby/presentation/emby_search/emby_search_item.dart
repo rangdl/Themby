@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:themby/src/common/widget/dynamic_height_grid_view.dart';
@@ -7,7 +5,6 @@ import 'package:themby/src/common/widget/empty_data.dart';
 import 'package:themby/src/extensions/constrains.dart';
 import 'package:themby/src/features/emby/data/search_repository.dart';
 import 'package:themby/src/features/emby/presentation/widgets/media_card_v.dart';
-import 'package:themby/src/helper/screen_helper.dart';
 
 import 'emby_search_query_notifier.dart';
 
@@ -23,11 +20,12 @@ class EmbySearchItem extends ConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
 
     return respAsync.when(
-      loading: () => Center(child: Image.asset("assets/loading/loading-2.gif",height: 80)),
-      error: (error, stack) =>  SizedBox(child: Text(error.toString()),),
+      loading: () => Center(child: Image.asset("assets/loading/loading-2.gif", height: 80)),
+      error: (error, stack) => SizedBox(
+        child: Text(error.toString()),
+      ),
       data: (data) {
-
-        if(data.items.isEmpty){
+        if (data.items.isEmpty) {
           return const Center(child: EmptyData());
         }
 
@@ -36,7 +34,7 @@ class EmbySearchItem extends ConsumerWidget {
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
           builder: (BuildContext context, int index) {
-            return LayoutBuilder(builder: (context, boxConstraints){
+            return LayoutBuilder(builder: (context, boxConstraints) {
               return MediaCardV(
                 item: data.items[index],
                 width: boxConstraints.maxWidth,

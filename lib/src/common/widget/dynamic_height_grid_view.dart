@@ -89,7 +89,7 @@ class SliverDynamicHeightGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-            (ctx, columnIndex) {
+        (ctx, columnIndex) {
           return _GridRow(
             columnIndex: columnIndex,
             builder: builder,
@@ -108,7 +108,6 @@ class SliverDynamicHeightGridView extends StatelessWidget {
 
 class _GridRow extends StatelessWidget {
   const _GridRow({
-    super.key,
     required this.columnIndex,
     required this.builder,
     required this.itemCount,
@@ -135,7 +134,7 @@ class _GridRow extends StatelessWidget {
         crossAxisAlignment: crossAxisAlignment,
         children: List.generate(
           (crossAxisCount * 2) - 1,
-              (rowIndex) {
+          (rowIndex) {
             final rowNum = rowIndex + 1;
             if (rowNum % 2 == 0) {
               return SizedBox(width: crossAxisSpacing);

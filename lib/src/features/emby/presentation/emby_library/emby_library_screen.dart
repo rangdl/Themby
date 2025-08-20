@@ -4,17 +4,15 @@ import 'package:themby/src/common/widget/container_tab_indicator.dart';
 import 'package:themby/src/extensions/constrains.dart';
 import 'package:themby/src/features/emby/presentation/emby_library/tab_views/library_all_view.dart';
 import 'package:themby/src/features/emby/presentation/emby_library/tab_views/library_collection_view.dart';
-import 'package:themby/src/features/emby/presentation/emby_library/tab_views/library_favorite_view.dart';
-import 'package:themby/src/features/emby/presentation/emby_library/tab_views/library_folder_view.dart';
 import 'package:themby/src/features/emby/presentation/emby_library/tab_views/library_genre_view.dart';
 import 'package:themby/src/features/emby/presentation/emby_library/tab_views/library_recent_view.dart';
 import 'package:themby/src/features/emby/presentation/emby_library/tab_views/library_tag_view.dart';
 
 import 'item_bars.dart';
 
-
-class EmbyLibraryScreen extends ConsumerStatefulWidget{
-  const EmbyLibraryScreen({super.key, required this.parentId,required this.filter, required this.title});
+class EmbyLibraryScreen extends ConsumerStatefulWidget {
+  const EmbyLibraryScreen(
+      {super.key, required this.parentId, required this.filter, required this.title});
   final String title;
   final String parentId;
   final String filter;
@@ -23,10 +21,9 @@ class EmbyLibraryScreen extends ConsumerStatefulWidget{
   ConsumerState<EmbyLibraryScreen> createState() => _EmbyLibraryScreen();
 }
 
-class _EmbyLibraryScreen extends ConsumerState<EmbyLibraryScreen>  with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
-
+class _EmbyLibraryScreen extends ConsumerState<EmbyLibraryScreen>
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   late final TabController _tabController = TabController(vsync: this, length: tabs.length);
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +55,9 @@ class _EmbyLibraryScreen extends ConsumerState<EmbyLibraryScreen>  with Automati
                   : Theme.of(context).colorScheme.primary,
               indicator: isLandscape
                   ? ContainerTabIndicator(
-                radius: BorderRadius.circular(8.0),
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              )
+                      radius: BorderRadius.circular(8.0),
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    )
                   : null,
               onTap: (index) {
                 if (!_tabController.indexIsChanging) {
@@ -89,6 +86,3 @@ class _EmbyLibraryScreen extends ConsumerState<EmbyLibraryScreen>  with Automati
   @override
   bool get wantKeepAlive => true;
 }
-
-
-

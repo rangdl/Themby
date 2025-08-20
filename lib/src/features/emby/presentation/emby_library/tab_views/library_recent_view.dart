@@ -1,14 +1,10 @@
-
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:themby/src/common/widget/dynamic_height_grid_view.dart';
 import 'package:themby/src/common/widget/empty_data.dart';
-import 'package:themby/src/common/widget/header_text.dart';
 import 'package:themby/src/common/widget/network_img_layer.dart';
 import 'package:themby/src/extensions/constrains.dart';
 import 'package:themby/src/features/emby/application/emby_common_service.dart';
@@ -16,7 +12,7 @@ import 'package:themby/src/features/emby/application/emby_media_service.dart';
 import 'package:themby/src/features/emby/data/view_repository.dart';
 import 'package:themby/src/features/emby/domain/emby/item.dart';
 
-class LibraryRecentView extends ConsumerWidget{
+class LibraryRecentView extends ConsumerWidget {
   const LibraryRecentView({super.key, required this.parentId, required this.filter});
 
   final String parentId;
@@ -50,7 +46,8 @@ class LibraryRecentView extends ConsumerWidget{
                     width: boxConstraints.maxWidth,
                     height: height,
                     onTap: () {
-                      final selectedMedia = ref.read(embyMediaServiceProvider.notifier).getSelectedMedia(data);
+                      final selectedMedia =
+                          ref.read(embyMediaServiceProvider.notifier).getSelectedMedia(data);
                       GoRouter.of(context).push('/player', extra: selectedMedia);
                     },
                   );
@@ -82,7 +79,12 @@ class LibraryRecentView extends ConsumerWidget{
 }
 
 class RecentCard extends StatelessWidget {
-  const RecentCard({super.key, required this.data, required this.width, required this.height, required this.onTap});
+  const RecentCard(
+      {super.key,
+      required this.data,
+      required this.width,
+      required this.height,
+      required this.onTap});
 
   final Item data;
 
@@ -94,14 +96,13 @@ class RecentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     String imageUrl = "";
 
-    if(data.type == "Episode") {
-      imageUrl = (data.primaryImageAspectRatio ?? 0 ) >= 1
+    if (data.type == "Episode") {
+      imageUrl = (data.primaryImageAspectRatio ?? 0) >= 1
           ? data.imagesCustom!.primary
           : data.imagesCustom!.backdrop;
-    }else{
+    } else {
       imageUrl = data.imagesCustom?.backdrop.isNotEmpty == true
           ? data.imagesCustom!.backdrop
           : data.imagesCustom!.primary;
@@ -118,7 +119,7 @@ class RecentCard extends StatelessWidget {
             width: width,
             height: height,
             child: NetworkImgLayer(
-              imageUrl: formatImageUrl(url: imageUrl,width: width.toInt(),height: height.toInt()),
+              imageUrl: formatImageUrl(url: imageUrl, width: width.toInt(), height: height.toInt()),
               width: width,
               height: height,
             ),
@@ -160,30 +161,26 @@ class RecentCard extends StatelessWidget {
                   height: height * 0.5,
                   width: width * 0.5,
                   alignment: Alignment.bottomLeft,
-                  imageUrl: formatImageUrl(url: data.imagesCustom!.logo,width: width.toInt(),height: height.toInt()),
-                  errorWidget: (_,__,___) => Align(
+                  imageUrl: formatImageUrl(
+                      url: data.imagesCustom!.logo, width: width.toInt(), height: height.toInt()),
+                  errorWidget: (_, __, ___) => Align(
                     alignment: Alignment.bottomLeft,
                     child: Text(
                       data.name!,
                       maxLines: 2,
                       style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                      ),
+                          fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
-                if(data.type == "Episode")
+                if (data.type == "Episode")
                   SizedBox(
                     width: 300,
-                    child: Text(
-                        'S${data.parentIndexNumber}E${data.indexNumber} - ${data.name}',
+                    child: Text('S${data.parentIndexNumber}E${data.indexNumber} - ${data.name}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: Colors.white,fontSize: 12)
-                    ),
+                        style: const TextStyle(color: Colors.white, fontSize: 12)),
                   ),
               ],
             ),
@@ -201,10 +198,8 @@ class SkeletonRecentCard extends StatelessWidget {
 
   final double height;
 
-
   @override
   Widget build(BuildContext context) {
-
     Color inverseSurface = Theme.of(context).colorScheme.inverseSurface;
     Color onInverseSurface = Theme.of(context).colorScheme.onInverseSurface;
 

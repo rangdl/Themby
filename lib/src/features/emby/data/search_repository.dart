@@ -1,21 +1,17 @@
-
-
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:themby/src/common/domiani/site.dart';
 import 'package:themby/src/features/emby/application/emby_state_service.dart';
 import 'package:themby/src/features/emby/domain/emby/custom/images_custom.dart';
 import 'package:themby/src/features/emby/domain/emby_response.dart';
-import 'package:themby/src/features/emby/domain/media.dart';
-
 
 import 'package:themby/src/helper/cancel_token_ref.dart';
 import 'package:themby/src/helper/dio_provider.dart';
 
 part 'search_repository.g.dart';
 
-class SearchRepository{
-
+class SearchRepository {
   final Dio client;
   final Site site;
   final String embyToken;
@@ -27,7 +23,6 @@ class SearchRepository{
     required this.site,
     required this.embyToken,
   });
-
 
   Future<EmbyResponse> getSearchRecommend({CancelToken? cancelToken}) async {
     final response = await client.getUri(
@@ -44,14 +39,11 @@ class SearchRepository{
             'Recursive': 'true',
             'EnableUserData': 'true',
             'EnableImage': 'false',
-          }
-      ),
-      options: Options(
-          headers: {
-            'X-Emby-Authorization': site.accessToken,
-            'x-emby-token': site.accessToken,
-          }
-      ),
+          }),
+      options: Options(headers: {
+        'X-Emby-Authorization': site.accessToken,
+        'x-emby-token': site.accessToken,
+      }),
       cancelToken: cancelToken,
     );
     final resp = EmbyResponse.fromJson(response.data);
@@ -79,18 +71,16 @@ class SearchRepository{
             "SortOrder": "Ascending",
             "SearchTerm": "${query!}%",
             'Recursive': 'true',
-            "Fields": "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
+            "Fields":
+                "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CommunityRating",
             "EnableImageTypes": "Primary,Backdrop,Thumb",
             "GroupProgramsBySeries": "true",
             "EnableTotalRecordCount": "true",
-          }
-      ),
-      options: Options(
-          headers: {
-            'X-Emby-Authorization': site.accessToken,
-            'x-emby-token': site.accessToken,
-          }
-      ),
+          }),
+      options: Options(headers: {
+        'X-Emby-Authorization': site.accessToken,
+        'x-emby-token': site.accessToken,
+      }),
       cancelToken: cancelToken,
     );
     final resp = EmbyResponse.fromJson(response.data);
@@ -101,25 +91,23 @@ class SearchRepository{
 
     return resp;
   }
-
 }
 
+@riverpod
+SearchRepository searchRepository(Ref ref) => SearchRepository(
+      client: ref.watch(dioProvider),
+      site: ref.watch(embyStateServiceProvider.select((value) => value.site!)),
+      embyToken: ref.watch(embyStateServiceProvider.select((value) => value.token)),
+    );
 
 @riverpod
-SearchRepository searchRepository(SearchRepositoryRef ref)  => SearchRepository(
-  client: ref.watch(dioProvider),
-  site: ref.watch(embyStateServiceProvider.select((value) => value.site!)),
-  embyToken: ref.watch(embyStateServiceProvider.select((value) => value.token)),
-);
-
-@riverpod
-Future<EmbyResponse> getSearchRecommend(GetSearchRecommendRef ref) async {
+Future<EmbyResponse> getSearchRecommend(Ref ref) async {
   final cancelToken = ref.cancelToken();
   return ref.read(searchRepositoryProvider).getSearchRecommend(cancelToken: cancelToken);
 }
 
 @riverpod
-Future<EmbyResponse> embySearch(EmbySearchRef ref, String query) async {
+Future<EmbyResponse> embySearch(Ref ref, String query) async {
   final cancelToken = ref.cancelToken();
   return ref.read(searchRepositoryProvider).search(query: query, cancelToken: cancelToken);
 }

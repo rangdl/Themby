@@ -1,7 +1,5 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:themby/src/common/constants.dart';
 
 import 'emby_search_item.dart';
 import 'emby_search_query_notifier.dart';
@@ -14,10 +12,8 @@ class EmbySearchScreen extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _EmbySearchScreenState();
 }
 
-class _EmbySearchScreenState extends ConsumerState<EmbySearchScreen>  {
-
+class _EmbySearchScreenState extends ConsumerState<EmbySearchScreen> {
   final _controller = TextEditingController();
-
 
   @override
   void dispose() {
@@ -27,7 +23,6 @@ class _EmbySearchScreenState extends ConsumerState<EmbySearchScreen>  {
 
   @override
   Widget build(BuildContext context) {
-
     final String query = ref.watch(embySearchQueryNotifierProvider);
 
     return Scaffold(
@@ -41,12 +36,7 @@ class _EmbySearchScreenState extends ConsumerState<EmbySearchScreen>  {
         ),
         titleSpacing: 0,
         actions: [
-          IconButton(
-              icon: const Icon(Icons.search,size: 22),
-              onPressed: () {
-
-              }
-          ),
+          IconButton(icon: const Icon(Icons.search, size: 22), onPressed: () {}),
           const SizedBox(width: 10)
         ],
         title: TextField(
@@ -63,8 +53,7 @@ class _EmbySearchScreenState extends ConsumerState<EmbySearchScreen>  {
                 color: Theme.of(context).colorScheme.outline,
               ),
               onPressed: () {
-                ref.read(embySearchQueryNotifierProvider.notifier)
-                    .setQuery('');
+                ref.read(embySearchQueryNotifierProvider.notifier).setQuery('');
                 _controller.clear();
               },
             ),
@@ -73,24 +62,18 @@ class _EmbySearchScreenState extends ConsumerState<EmbySearchScreen>  {
             FocusManager.instance.primaryFocus?.unfocus();
           },
           onChanged: (value) {
-            ref.read(embySearchQueryNotifierProvider.notifier)
-                .setQuery(value);
+            ref.read(embySearchQueryNotifierProvider.notifier).setQuery(value);
           },
         ),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(12),
-        child: query.isNotEmpty
-            ? const EmbySearchItem()
-            : const EmbySearchSuggests(),
+        child: query.isNotEmpty ? const EmbySearchItem() : const EmbySearchSuggests(),
       ),
     );
   }
 }
 
-
-
-Widget _searchHistory() {
-  return const SizedBox();
-}
+// Widget _searchHistory() {
+//   return const SizedBox();
+// }

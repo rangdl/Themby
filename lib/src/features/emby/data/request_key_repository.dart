@@ -1,16 +1,13 @@
-
-
-import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:themby/src/common/domiani/site.dart';
 import 'package:themby/src/features/emby/application/emby_state_service.dart';
-import 'package:themby/src/features/emby/data/view_repository.dart';
 
 part 'request_key_repository.g.dart';
 
 @riverpod
-String viewKey(ViewKeyRef ref){
-  Site site =  ref.watch(embyStateServiceProvider.select((value) => value.site!));
+String viewKey(Ref ref) {
+  Site site = ref.watch(embyStateServiceProvider.select((value) => value.site!));
 
   return Uri(
       scheme: site.scheme,
@@ -20,13 +17,12 @@ String viewKey(ViewKeyRef ref){
       queryParameters: {
         "MediaTypes": "Video",
         "Fields": "BasicSyncInfo,CanDelete,PrimaryImageAspectRatio,ProductionYear"
-      }
-  ).toString();
+      }).toString();
 }
 
 @riverpod
-String resumeKey(ResumeKeyRef ref, {String? parentId }){
-  Site site =  ref.watch(embyStateServiceProvider.select((value) => value.site!));
+String resumeKey(Ref ref, {String? parentId}) {
+  Site site = ref.watch(embyStateServiceProvider.select((value) => value.site!));
 
   return Uri(
       scheme: site.scheme,
@@ -35,18 +31,18 @@ String resumeKey(ResumeKeyRef ref, {String? parentId }){
       path: '/emby/Users/${site.userId}/Items/Resume',
       queryParameters: {
         'Limit': '25',
-        'Fields': 'BasicSyncInfo,CanDelete,Container,PrimaryImageAspectRatio,ProductionYear,EndDate,CriticRating,OfficialRating,CommunityRating,Status',
+        'Fields':
+            'BasicSyncInfo,CanDelete,Container,PrimaryImageAspectRatio,ProductionYear,EndDate,CriticRating,OfficialRating,CommunityRating,Status',
         'ImageTypeLimit': '1',
         'EnableImageTypes': 'Primary,Backdrop,Thumb',
         'MediaTypes': 'Video',
         'ParentId': parentId,
-      }
-  ).toString();
+      }).toString();
 }
 
 @riverpod
-String suggestionKey(SuggestionKeyRef ref){
-  Site site =  ref.watch(embyStateServiceProvider.select((value) => value.site!));
+String suggestionKey(Ref ref) {
+  Site site = ref.watch(embyStateServiceProvider.select((value) => value.site!));
 
   return Uri(
       scheme: site.scheme,
@@ -63,12 +59,11 @@ String suggestionKey(SuggestionKeyRef ref){
         'SortBy': 'IsFavoriteOrLiked,Random',
         'EnableUserData': 'false',
         'EnableTotalRecordCount': 'false',
-      }
-  ).toString();
+      }).toString();
 }
 
 @riverpod
-String lastMediaKey(LastMediaKeyRef ref,String parentId){
+String lastMediaKey(Ref ref, String parentId) {
   Site site = ref.watch(embyStateServiceProvider.select((value) => value.site!));
 
   return Uri(
@@ -78,11 +73,11 @@ String lastMediaKey(LastMediaKeyRef ref,String parentId){
       path: '/emby/Users/${site.userId}/Items/Latest',
       queryParameters: {
         'Limit': '16',
-        'Fields': 'BasicSyncInfo,CanDelete,Container,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CriticRating,OfficialRating,CommunityRating',
+        'Fields':
+            'BasicSyncInfo,CanDelete,Container,PrimaryImageAspectRatio,ProductionYear,Status,EndDate,CriticRating,OfficialRating,CommunityRating',
         'ImageTypeLimit': '1',
         'EnableImageTypes': 'Primary,Backdrop,Thumb',
         'EnableUserData': 'true',
         'ParentId': parentId,
-      }
-  ).toString();
+      }).toString();
 }
